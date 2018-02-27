@@ -1,11 +1,55 @@
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-scope = ["https://spreadsheets.google.com/feeds"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("client_secret.json", scope)
-client = gspread.authorize(creds)
-TabellenListe = ["FinaleMannlich9","FinaleWeiblich9"]
+from kivy.app import App
+from kivy.lang import Builder
+from kivy.uix.screenmanager import ScreenManager, Screen, SwapTransition
 
 
-TabellenBlatt = client.open("FinaleMannlich9").sheet1
-wert = TabellenBlatt.cell(1,2).value
-print(wert)
+
+
+Builder.load_string("""
+<MenuScreen>:
+    BoxLayout:
+        Button:
+            text: 'Goto settings'
+            on_press:
+                root.manager.transition.direction = 'left'
+                root.manager.current = 'settings'
+        Button:
+            text: 'Quit'
+
+<SettingsScreen>:
+    BoxLayout:
+        Button:
+            text: 'My settings button'
+        Button:
+            text: 'Back to menu'
+            on_press:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'menu'
+""")
+
+# Declare both screens
+class MenuScreen(Screen):
+    pass
+
+class SettingsScreen(Screen):
+    pass
+
+
+
+
+# Create the screen manager
+sm = ScreenManager(transition=SwapTransition())
+sm.add_widget(MenuScreen(name='menu'))
+sm.add_widget(SettingsScreen(name='settings'))
+
+
+
+
+
+class TestApp(App):
+
+    def build(self):
+        return sm
+
+if __name__ == '__main__':
+    TestApp().run()
